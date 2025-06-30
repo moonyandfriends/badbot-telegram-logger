@@ -277,6 +277,12 @@ CREATE OR REPLACE TRIGGER update_telegram_users_updated_at
 
 -- Create some useful views for common queries
 
+-- Drop existing views if they exist to avoid conflicts
+DROP VIEW IF EXISTS recent_messages CASCADE;
+DROP VIEW IF EXISTS chat_message_stats CASCADE;
+DROP VIEW IF EXISTS action_stats CASCADE;
+DROP VIEW IF EXISTS user_activity_stats CASCADE;
+
 -- View for recent messages with sender information
 CREATE OR REPLACE VIEW recent_messages AS
 SELECT 
