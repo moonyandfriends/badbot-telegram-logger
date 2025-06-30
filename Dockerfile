@@ -15,14 +15,14 @@ RUN pip install poetry
 # Copy poetry files
 COPY pyproject.toml poetry.lock* README.md ./
 
+# Copy source code
+COPY src/ ./src/
+
 # Configure Poetry to not create virtual environment
 RUN poetry config virtualenvs.create false
 
 # Install dependencies
 RUN poetry install --only=main
-
-# Copy source code
-COPY src/ ./src/
 
 # Create logs directory
 RUN mkdir -p logs
