@@ -644,7 +644,7 @@ class TelegramLogger:
             logger.info("Bot started successfully")
             
             # Keep the bot running
-            await self.application.updater.idle()
+            await self.application.idle()
             
         except Exception as e:
             logger.error(f"Failed to start bot: {e}")
@@ -705,7 +705,6 @@ class TelegramLogger:
             
             # Stop the bot
             if self.application.running:
-                await self.application.updater.stop()
                 await self.application.stop()
                 await self.application.shutdown()
             
