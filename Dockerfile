@@ -22,7 +22,7 @@ COPY src/ ./src/
 RUN poetry config virtualenvs.create false
 
 # Install dependencies
-RUN poetry install --only=main
+RUN poetry install --only=main --no-root
 
 # Create logs directory
 RUN mkdir -p logs

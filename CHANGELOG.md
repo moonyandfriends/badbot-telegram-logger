@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed deprecated `--no-dev` flag in Dockerfile for Poetry compatibility
 - Fixed Docker build by copying README.md file for Poetry project installation
 - Fixed Docker build by copying source code before Poetry install to resolve package installation
+- Fixed Docker build by using --no-root flag to skip current project installation
 
 ### Security
 - N/A 
