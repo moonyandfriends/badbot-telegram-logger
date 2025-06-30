@@ -1,0 +1,36 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### Changed
+- Renamed environment variables for consistency:
+  - `TELEGRAM_TOKEN` → `logger_telegram_token`
+  - `SUPABASE_KEY` → `supabase_key`
+  - `SUPABASE_URL` → `supabase_url`
+
+### Added
+- Initial project setup with Telegram bot integration
+- Supabase database integration with retry logic
+- Message and action logging functionality
+- Docker and docker-compose configuration
+- Comprehensive test suite
+- Health check endpoints
+- Backfill support for existing messages
+- Batch processing for improved performance
+
+### Deprecated
+- N/A
+
+### Removed
+- N/A
+
+### Fixed
+- N/A
+
+### Security
+- N/A 
