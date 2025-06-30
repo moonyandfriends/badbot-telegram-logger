@@ -17,7 +17,6 @@ import json
 from telegram import Message, Chat, User, Update
 from supabase import create_client, Client
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
-import asyncpg
 
 try:
     from loguru import logger

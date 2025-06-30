@@ -22,7 +22,7 @@ COPY src/ ./src/
 RUN poetry config virtualenvs.create false
 
 # Install dependencies
-RUN poetry install --only=main --no-root
+RUN poetry install --only=main
 
 # Create logs directory
 RUN mkdir -p logs
@@ -35,4 +35,4 @@ ENV PYTHONPATH=/app/src
 ENV PYTHONUNBUFFERED=1
 
 # Run the bot
-CMD ["poetry", "run", "telegram-logger"] 
+CMD ["python", "-m", "badbot_telegram_logger.main"] 
