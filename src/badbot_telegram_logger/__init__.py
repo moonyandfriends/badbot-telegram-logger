@@ -13,6 +13,7 @@ __description__ = "Telegram message and action logging bot"
 from .config import Config, load_config, get_config
 from .models import ActionType, MessageType
 from .database import SupabaseManager, DatabaseError
+from .bot import TelegramLogger
 
 __all__ = [
     "Config",
@@ -22,4 +23,5 @@ __all__ = [
     "MessageType",
     "SupabaseManager",
     "DatabaseError",
+    "TelegramLogger",
 ] 

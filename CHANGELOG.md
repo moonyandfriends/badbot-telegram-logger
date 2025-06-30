@@ -39,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed unused asyncpg import from database.py to fix ModuleNotFoundError
 - Fixed Docker installation to properly install the project package
 - Changed Docker CMD to run bot directly with python instead of poetry run script
+- Added TelegramLogger to __init__.py exports to fix import error in main.py
 
 ### Security
 - N/A 
