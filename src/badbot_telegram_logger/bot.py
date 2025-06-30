@@ -644,7 +644,8 @@ class TelegramLogger:
             logger.info("Bot started successfully")
             
             # Keep the bot running
-            await self.application.idle()
+            while self.application.running:
+                await asyncio.sleep(1)
             
         except Exception as e:
             logger.error(f"Failed to start bot: {e}")
