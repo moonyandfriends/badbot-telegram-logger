@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
 RUN pip install poetry
 
 # Copy poetry files
-COPY pyproject.toml poetry.lock* ./
+COPY pyproject.toml poetry.lock* README.md ./
 
 # Configure Poetry to not create virtual environment
 RUN poetry config virtualenvs.create false
