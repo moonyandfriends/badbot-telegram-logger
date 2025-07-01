@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - N/A
 
 ### Fixed
+- Updated Supabase URL validation to support self-hosted deployments with custom domains
 - Added DROP VIEW statements to schema.sql to prevent conflicts when importing to existing databases
 - Created cleanup.sql script for resolving database import conflicts
 - Fixed deprecated `--no-dev` flag in Dockerfile for Poetry compatibility
