@@ -6,6 +6,10 @@ DROP VIEW IF EXISTS recent_messages CASCADE;
 DROP VIEW IF EXISTS chat_message_stats CASCADE;
 DROP VIEW IF EXISTS action_stats CASCADE;
 DROP VIEW IF EXISTS user_activity_stats CASCADE;
+DROP VIEW IF EXISTS telegram_recent_messages CASCADE;
+DROP VIEW IF EXISTS telegram_chat_message_stats CASCADE;
+DROP VIEW IF EXISTS telegram_action_stats CASCADE;
+DROP VIEW IF EXISTS telegram_user_activity_stats CASCADE;
 
 -- Drop existing tables (WARNING: This will delete all data!)
 -- Uncomment these lines if you want to start fresh

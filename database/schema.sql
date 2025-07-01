@@ -282,9 +282,13 @@ DROP VIEW IF EXISTS recent_messages CASCADE;
 DROP VIEW IF EXISTS chat_message_stats CASCADE;
 DROP VIEW IF EXISTS action_stats CASCADE;
 DROP VIEW IF EXISTS user_activity_stats CASCADE;
+DROP VIEW IF EXISTS telegram_recent_messages CASCADE;
+DROP VIEW IF EXISTS telegram_chat_message_stats CASCADE;
+DROP VIEW IF EXISTS telegram_action_stats CASCADE;
+DROP VIEW IF EXISTS telegram_user_activity_stats CASCADE;
 
 -- View for recent messages with sender information
-CREATE OR REPLACE VIEW recent_messages AS
+CREATE OR REPLACE VIEW telegram_recent_messages AS
 SELECT 
     m.message_id,
     m.text,
@@ -300,7 +304,7 @@ LEFT JOIN telegram_chats c ON m.chat_id = c.chat_id
 ORDER BY m.date DESC;
 
 -- View for message statistics by chat
-CREATE OR REPLACE VIEW chat_message_stats AS
+CREATE OR REPLACE VIEW telegram_chat_message_stats AS
 SELECT 
     c.chat_id,
     c.title as chat_title,
@@ -315,7 +319,7 @@ LEFT JOIN telegram_messages m ON c.chat_id = m.chat_id
 GROUP BY c.chat_id, c.title, c.username, c.chat_type;
 
 -- View for action statistics
-CREATE OR REPLACE VIEW action_stats AS
+CREATE OR REPLACE VIEW telegram_action_stats AS
 SELECT 
     action_type,
     COUNT(*) as count,
@@ -326,7 +330,7 @@ GROUP BY action_type
 ORDER BY count DESC;
 
 -- View for user activity statistics
-CREATE OR REPLACE VIEW user_activity_stats AS
+CREATE OR REPLACE VIEW telegram_user_activity_stats AS
 SELECT 
     u.user_id,
     u.username,

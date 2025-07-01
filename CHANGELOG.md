@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `TELEGRAM_TOKEN` → `logger_telegram_token`
   - `SUPABASE_KEY` → `supabase_key`
   - `SUPABASE_URL` → `supabase_url`
+- Renamed database views to use consistent `telegram_` prefix:
+  - `recent_messages` → `telegram_recent_messages`
+  - `chat_message_stats` → `telegram_chat_message_stats`
+  - `action_stats` → `telegram_action_stats`
+  - `user_activity_stats` → `telegram_user_activity_stats`
 
 ### Added
 - Initial project setup with Telegram bot integration
