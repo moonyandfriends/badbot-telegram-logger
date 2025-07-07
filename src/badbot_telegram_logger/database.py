@@ -791,40 +791,6 @@ class SupabaseManager:
             logger.error(f"Failed to get database statistics: {e}")
             return self._stats_cache if self._stats_cache else {}
     
-    async def health_check(self) -> Dict[str, Any]:
-        """
-        Perform a health check on the database.
-        
-        Returns:
-            Dictionary containing health check results
-        """
-        health_status = {
-            "database_connected": False,
-            "tables_accessible": False,
-            "last_message_timestamp": None,
-            "error": None
-        }
-        
-        try:
-            # Test basic connection
-            await self._test_connection()
-            health_status["database_connected"] = True
-            
-            # Test table access
-            def test_tables(client: Client) -> Any:
-                return client.table(self.table_names["messages"]).select("date").order("date", desc=True).limit(1)
-            
-            result = await self._execute_with_retry(test_tables, "health_check_tables")
-            health_status["tables_accessible"] = True
-            
-            if result.data:
-                health_status["last_message_timestamp"] = result.data[0]["date"]
-            
-        except Exception as e:
-            health_status["error"] = str(e)
-            logger.error(f"Health check failed: {e}")
-        
-        return health_status
     
     async def cleanup_old_data(self, days_to_keep: int = 90) -> Dict[str, int]:
         """

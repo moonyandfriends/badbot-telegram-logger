@@ -13,8 +13,6 @@ from datetime import datetime, timezone, timedelta
 from typing import Any, Dict, List, Optional, Set, Tuple
 from collections import deque
 import gc
-from aiohttp import web
-import aiohttp
 
 from telegram import Update, Message, Chat, User
 from telegram.ext import Application, MessageHandler, filters, ContextTypes
@@ -76,9 +74,6 @@ class TelegramLogger:
             }
         }
         
-        # Health check server
-        self.health_app = None
-        self.health_server = None
         
         # Setup logging
         self._setup_logging()
@@ -477,48 +472,6 @@ class TelegramLogger:
             if chat_id_str in self.backfill_tasks:
                 del self.backfill_tasks[chat_id_str]
     
-    async def _start_health_server(self) -> None:
-        """Start the health check server."""
-        try:
-            self.health_app = web.Application()
-            
-            async def health_handler(request):
-                """Health check endpoint handler."""
-                health_data = await self.get_health_status()
-                return web.json_response(health_data)
-            
-            async def stats_handler(request):
-                """Statistics endpoint handler."""
-                stats_data = await self.get_stats()
-                return web.json_response(stats_data)
-            
-            async def root_handler(request):
-                """Root endpoint handler."""
-                return web.json_response({
-                    "name": "Telegram Logger Bot",
-                    "status": "running",
-                    "endpoints": {
-                        "health": "/health",
-                        "stats": "/stats"
-                    }
-                })
-            
-            self.health_app.router.add_get('/', root_handler)
-            self.health_app.router.add_get('/health', health_handler)
-            self.health_app.router.add_get('/stats', stats_handler)
-            
-            runner = web.AppRunner(self.health_app)
-            await runner.setup()
-            
-            # Use Railway's PORT environment variable or fallback to config
-            port = int(os.environ.get('PORT', self.config.health_check_port))
-            site = web.TCPSite(runner, '0.0.0.0', port)
-            await site.start()
-            
-            logger.info(f"Health check server started on port {port}")
-            
-        except Exception as e:
-            logger.error(f"Failed to start health check server: {e}")
     
     async def cleanup_memory(self) -> None:
         """Clean up memory periodically."""
@@ -569,75 +522,7 @@ class TelegramLogger:
         except Exception as e:
             logger.error(f"Error updating stats: {e}")
     
-    async def get_health_status(self) -> Dict[str, Any]:
-        """Get comprehensive health status."""
-        try:
-            # Database health
-            db_health = await self.db_manager.health_check()
-            
-            # Bot health
-            bot_health = {
-                "bot_connected": self.application.running,
-                "chat_count": len(self.backfill_in_progress),
-                "user_id": str(self.application.bot.id) if self.application.bot and hasattr(self.application.bot, 'id') else None,
-            }
-            
-            # Queue health
-            queue_health = {
-                "message_queue_size": len(self.message_queue),
-                "action_queue_size": len(self.action_queue),
-                "message_queue_full": len(self.message_queue) >= self.config.max_queue_size * 0.9,
-                "action_queue_full": len(self.action_queue) >= self.config.max_queue_size * 0.9,
-            }
-            
-            # Overall health status
-            overall_healthy = (
-                db_health["database_connected"] and 
-                bot_health["bot_connected"] and
-                not queue_health["message_queue_full"] and
-                not queue_health["action_queue_full"]
-            )
-            
-            return {
-                "healthy": overall_healthy,
-                "timestamp": datetime.now(timezone.utc).isoformat(),
-                "database": db_health,
-                "bot": bot_health,
-                "queues": queue_health,
-                "stats": self.stats
-            }
-            
-        except Exception as e:
-            logger.error(f"Error getting health status: {e}")
-            return {
-                "healthy": False,
-                "error": str(e),
-                "timestamp": datetime.now(timezone.utc).isoformat()
-            }
     
-    async def get_stats(self) -> Dict[str, Any]:
-        """
-        Get bot statistics.
-        
-        Returns:
-            Dictionary containing bot statistics
-        """
-        uptime = datetime.now(timezone.utc) - self.stats["start_time"]
-        
-        return {
-            "uptime_seconds": uptime.total_seconds(),
-            "messages_processed": self.stats["messages_processed"],
-            "actions_processed": self.stats["actions_processed"],
-            "errors": self.stats["errors"],
-            "chats": len(self.backfill_in_progress),
-            "queue_sizes": {
-                "messages": len(self.message_queue),
-                "actions": len(self.action_queue)
-            },
-            "backfill_status": {
-                chat_id: status for chat_id, status in self.backfill_in_progress.items()
-            }
-        }
     
     async def start(self) -> None:
         """Start the bot."""
@@ -655,9 +540,6 @@ class TelegramLogger:
             logger.debug("Creating background tasks...")
             asyncio.create_task(self._background_tasks())
             
-            # Start health check server
-            if self.config.health_check_enabled:
-                await self._start_health_server()
             
             # Start backfill if enabled
             if self.config.backfill_enabled and self.config.backfill_on_startup:
@@ -725,9 +607,6 @@ class TelegramLogger:
             if self.db_manager:
                 await self.db_manager.close()
             
-            # Stop health server
-            if self.health_app:
-                await self.health_app.cleanup()
             
             # Stop the bot
             if self.application.running:

@@ -88,9 +88,6 @@ class Config(BaseSettings):
     flush_interval: int = Field(5, description="Interval to flush pending operations in seconds", alias="FLUSH_INTERVAL")
     max_queue_size: int = Field(10000, description="Maximum size of message queue", alias="MAX_QUEUE_SIZE")
     
-    # Health Check Configuration
-    health_check_enabled: bool = Field(True, description="Enable health check endpoint", alias="HEALTH_CHECK_ENABLED")
-    health_check_port: int = Field(8080, description="Port for health check server", alias="HEALTH_CHECK_PORT")
     
     # Metrics Configuration
     metrics_enabled: bool = Field(False, description="Enable metrics collection", alias="METRICS_ENABLED")
@@ -157,7 +154,7 @@ class Config(BaseSettings):
             raise ValueError("Retry delay must be between 0.1 and 60.0 seconds")
         return v
     
-    @field_validator("health_check_port", "metrics_port")
+    @field_validator("metrics_port")
     @classmethod
     def validate_port(cls, v: int) -> int:
         """Validate port numbers."""
