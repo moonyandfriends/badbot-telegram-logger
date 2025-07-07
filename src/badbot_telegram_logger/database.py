@@ -848,6 +848,20 @@ class SupabaseManager:
         try:
             data = message_model.model_dump()
             
+            # Remove fields that don't exist in the database schema
+            fields_to_remove = [
+                'connected_website',
+                'passport_data', 
+                'proximity_alert_triggered',
+                'video_chat_scheduled',
+                'video_chat_started',
+                'video_chat_ended',
+                'video_chat_participants_invited'
+            ]
+            
+            for field in fields_to_remove:
+                data.pop(field, None)
+            
             # Recursively convert all datetime objects to strings
             data = self._convert_datetime_recursive(data)
             
