@@ -647,6 +647,7 @@ class TelegramLogger:
             logger.info("Database initialized successfully")
             
             # Start background tasks
+            logger.debug("Creating background tasks...")
             asyncio.create_task(self._background_tasks())
             
             # Start health check server

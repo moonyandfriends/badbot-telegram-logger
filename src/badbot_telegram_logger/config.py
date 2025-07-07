@@ -84,8 +84,8 @@ class Config(BaseSettings):
     ignored_channels: str = Field("", description="Comma-separated list of channel usernames to ignore", alias="IGNORED_CHANNELS")
     
     # Performance Configuration
-    batch_size: int = Field(50, description="Batch size for database operations", alias="BATCH_SIZE")
-    flush_interval: int = Field(30, description="Interval to flush pending operations in seconds", alias="FLUSH_INTERVAL")
+    batch_size: int = Field(5, description="Batch size for database operations", alias="BATCH_SIZE")
+    flush_interval: int = Field(5, description="Interval to flush pending operations in seconds", alias="FLUSH_INTERVAL")
     max_queue_size: int = Field(10000, description="Maximum size of message queue", alias="MAX_QUEUE_SIZE")
     
     # Health Check Configuration
