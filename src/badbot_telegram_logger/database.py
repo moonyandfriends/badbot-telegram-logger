@@ -607,26 +607,41 @@ class SupabaseManager:
         Returns:
             MessageModel instance ready for database storage
         """
-        # Determine message type
-        message_type = MessageType.TEXT
-        if message.text:
-            message_type = MessageType.TEXT
-        elif message.photo:
+        # Determine message type and text content
+        message_text = message.text
+        message_type = MessageType.TEXT # Default to TEXT
+
+        if message.photo:
             message_type = MessageType.PHOTO
+            if message.caption:
+                message_text = message.caption
         elif message.video:
             message_type = MessageType.VIDEO
+            if message.caption:
+                message_text = message.caption
         elif message.audio:
             message_type = MessageType.AUDIO
+            if message.caption:
+                message_text = message.caption
         elif message.document:
             message_type = MessageType.DOCUMENT
+            if message.caption:
+                message_text = message.caption
         elif message.voice:
             message_type = MessageType.VOICE
+            if message.caption:
+                message_text = message.caption
         elif message.video_note:
             message_type = MessageType.VIDEO_NOTE
+            if message.caption:
+                message_text = message.caption
         elif message.sticker:
             message_type = MessageType.STICKER
+            # Stickers don't usually have text, but if they do, it's in message.text
         elif message.animation:
             message_type = MessageType.ANIMATION
+            if message.caption:
+                message_text = message.caption
         elif message.contact:
             message_type = MessageType.CONTACT
         elif message.dice:
@@ -645,8 +660,9 @@ class SupabaseManager:
             message_type = MessageType.SUCCESSFUL_PAYMENT
         elif message.web_app_data:
             message_type = MessageType.WEB_APP_DATA
-        
-        # Handle attachments
+        # Add other message types as needed
+
+        # Handle attachments (existing logic)
         attachments = []
         if message.document:
             attachments.append(AttachmentModel(
@@ -662,8 +678,8 @@ class SupabaseManager:
             message_id=message.message_id,
             chat_id=message.chat.id,
             from_user_id=message.from_user.id if message.from_user else None,
-            text=message.text,
-            message_type=message_type,
+            text=message_text, # Use message_text here
+            message_type=message_type, # Use determined message_type
             from_user_username=message.from_user.username if message.from_user else None,
             from_user_first_name=message.from_user.first_name if message.from_user else None,
             from_user_last_name=message.from_user.last_name if message.from_user else None,
