@@ -129,13 +129,20 @@ class TelegramLogger:
     async def _handle_message(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         """Handle new messages."""
         if not update.message:
+            logger.debug("Received an update without a message.")
             return
         
         message = update.message
         
+        log_prefix = f"Message {message.message_id} from chat {message.chat.id}"
+        sender_info = f"user {message.from_user.id}" if message.from_user else "unknown user"
+        logger.debug(f"{log_prefix}: Received message from {sender_info}. Text: {message.text[:50] + '...' if message.text else '[No Text]'}")
+        
         if not await self._should_process_message(message):
+            logger.debug(f"{log_prefix}: Message skipped due to processing rules.")
             return
         
+        logger.debug(f"{log_prefix}: Message passed processing rules. Queuing for storage.")
         # Add to processing queue
         await self._queue_message(message)
         

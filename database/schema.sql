@@ -8,8 +8,8 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE IF NOT EXISTS telegram_messages (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     message_id INTEGER NOT NULL,
-    chat_id INTEGER NOT NULL,
-    from_user_id INTEGER,
+    chat_id BIGINT NOT NULL,
+    from_user_id BIGINT,
     text TEXT,
     message_type TEXT DEFAULT 'text',
     
@@ -23,15 +23,15 @@ CREATE TABLE IF NOT EXISTS telegram_messages (
     -- Message metadata
     date TIMESTAMPTZ NOT NULL,
     edit_date TIMESTAMPTZ,
-    forward_from_user_id INTEGER,
-    forward_from_chat_id INTEGER,
-    forward_from_message_id INTEGER,
+    forward_from_user_id BIGINT,
+    forward_from_chat_id BIGINT,
+    forward_from_message_id BIGINT,
     forward_signature TEXT,
     forward_sender_name TEXT,
     forward_date TIMESTAMPTZ,
     
     -- Reply information
-    reply_to_message_id INTEGER,
+    reply_to_message_id BIGINT,
     reply_to_message JSONB,
     
     -- Rich content (stored as JSONB for flexibility)
@@ -94,10 +94,10 @@ CREATE TABLE IF NOT EXISTS telegram_actions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     action_id TEXT NOT NULL UNIQUE,
     action_type TEXT NOT NULL,
-    chat_id INTEGER,
+    chat_id BIGINT,
     
     -- Actor information
-    user_id INTEGER,
+    user_id BIGINT,
     username TEXT,
     first_name TEXT,
     last_name TEXT,
@@ -131,7 +131,7 @@ CREATE INDEX IF NOT EXISTS idx_telegram_actions_is_backfilled ON telegram_action
 CREATE TABLE IF NOT EXISTS telegram_checkpoints (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     checkpoint_id TEXT NOT NULL UNIQUE,
-    chat_id INTEGER,
+    chat_id BIGINT,
     
     -- Checkpoint data
     checkpoint_type TEXT NOT NULL,
@@ -158,7 +158,7 @@ CREATE INDEX IF NOT EXISTS idx_telegram_checkpoints_updated_at ON telegram_check
 -- Table for storing Telegram chat information
 CREATE TABLE IF NOT EXISTS telegram_chats (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    chat_id INTEGER NOT NULL UNIQUE,
+    chat_id BIGINT NOT NULL UNIQUE,
     chat_type TEXT NOT NULL,
     title TEXT,
     username TEXT,
@@ -198,7 +198,7 @@ CREATE INDEX IF NOT EXISTS idx_telegram_chats_updated_at ON telegram_chats (upda
 -- Table for storing Telegram user information
 CREATE TABLE IF NOT EXISTS telegram_users (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id INTEGER NOT NULL UNIQUE,
+    user_id BIGINT NOT NULL UNIQUE,
     is_bot BOOLEAN DEFAULT FALSE,
     first_name TEXT NOT NULL,
     last_name TEXT,
@@ -278,10 +278,10 @@ CREATE OR REPLACE TRIGGER update_telegram_users_updated_at
 -- Create some useful views for common queries
 
 -- Drop existing views if they exist to avoid conflicts
-DROP VIEW IF EXISTS recent_messages CASCADE;
-DROP VIEW IF EXISTS chat_message_stats CASCADE;
-DROP VIEW IF EXISTS action_stats CASCADE;
-DROP VIEW IF EXISTS user_activity_stats CASCADE;
+DROP VIEW IF EXISTS telegram_recent_messages CASCADE;
+DROP VIEW IF EXISTS telegram_chat_message_stats CASCADE;
+DROP VIEW IF EXISTS telegram_action_stats CASCADE;
+DROP VIEW IF EXISTS telegram_user_activity_stats CASCADE;
 DROP VIEW IF EXISTS telegram_recent_messages CASCADE;
 DROP VIEW IF EXISTS telegram_chat_message_stats CASCADE;
 DROP VIEW IF EXISTS telegram_action_stats CASCADE;
