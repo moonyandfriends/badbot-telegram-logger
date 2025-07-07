@@ -579,7 +579,7 @@ class TelegramLogger:
             bot_health = {
                 "bot_connected": self.application.running,
                 "chat_count": len(self.backfill_in_progress),
-                "user_id": str(self.application.bot.id) if self.application.bot else None,
+                "user_id": str(self.application.bot.id) if self.application.bot and hasattr(self.application.bot, 'id') else None,
             }
             
             # Queue health
@@ -646,7 +646,12 @@ class TelegramLogger:
             await self.db_manager.initialize()
             logger.info("Database initialized successfully")
             
-            # Start background tasks
+            # Initialize and start the bot first
+            logger.info("Starting Telegram bot...")
+            await self.application.initialize()
+            await self.application.start()
+            
+            # Start background tasks after bot is initialized
             logger.debug("Creating background tasks...")
             asyncio.create_task(self._background_tasks())
             
@@ -659,10 +664,7 @@ class TelegramLogger:
                 logger.info("Starting backfill process...")
                 # Note: Backfill requires manual chat specification for Telegram
             
-            # Start the bot
-            logger.info("Starting Telegram bot...")
-            await self.application.initialize()
-            await self.application.start()
+            # Start polling
             await self.application.updater.start_polling()
             
             logger.info("Bot started successfully")
