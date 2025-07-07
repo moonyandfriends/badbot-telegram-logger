@@ -259,7 +259,7 @@ class SupabaseManager:
             return len(message_dicts)
             
         except Exception as e:
-            logger.error(f"Failed to store message batch: {e}")
+            logger.error(f"Failed to store message batch. Messages: {message_dicts}. Error: {e}")
             return 0
     
     async def store_action(
