@@ -163,7 +163,7 @@ class SupabaseManager:
             if hasattr(result, 'execute'):
                 result = result.execute()
                 
-            logger.debug(f"Successfully executed {operation_name}")
+            logger.debug(f"Successfully executed {operation_name}. Result: {result.data}")
             return result
             
         except Exception as e:
