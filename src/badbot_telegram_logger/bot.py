@@ -551,10 +551,18 @@ class TelegramLogger:
             
             logger.info("Bot started successfully")
             
-            
+            # Keep the bot running
+            try:
+                # This will keep the bot running indefinitely
+                await asyncio.Event().wait()
+            except (KeyboardInterrupt, asyncio.CancelledError):
+                logger.info("Received shutdown signal")
+            finally:
+                await self.close()
             
         except Exception as e:
             logger.error(f"Failed to start bot: {e}")
+            await self.close()
             raise
     
     async def _background_tasks(self) -> None:
