@@ -678,6 +678,7 @@ class TelegramLogger:
         """Run background tasks."""
         while self.application.running:
             try:
+                logger.debug("Running background tasks...")
                 # Process queues
                 await self._process_message_queue()
                 await self._process_action_queue()
