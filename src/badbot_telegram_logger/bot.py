@@ -282,7 +282,10 @@ class TelegramLogger:
     async def _process_message_queue(self) -> None:
         """Process all messages in the queue."""
         if not self.message_queue:
+            logger.debug("Message queue is empty. Nothing to process.")
             return
+        
+        logger.debug(f"Processing message queue. Current size: {len(self.message_queue)}")
         
         # Get messages from queue
         messages = []
@@ -290,7 +293,10 @@ class TelegramLogger:
             messages.append(self.message_queue.popleft())
         
         if not messages:
+            logger.debug("No messages to process after dequeuing.")
             return
+        
+        logger.debug(f"Attempting to store {len(messages)} messages in batch.")
         
         try:
             # Store messages in batch
