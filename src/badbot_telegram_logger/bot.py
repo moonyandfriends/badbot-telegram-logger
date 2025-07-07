@@ -128,8 +128,9 @@ class TelegramLogger:
     
     async def _handle_message(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         """Handle new messages."""
+        logger.debug(f"_handle_message entered for update: {update.update_id}")
         if not update.message:
-            logger.debug("Received an update without a message.")
+            logger.debug(f"Update {update.update_id}: No message object found in update.")
             return
         
         message = update.message
@@ -173,32 +174,41 @@ class TelegramLogger:
         Returns:
             True if message should be processed, False otherwise
         """
+        log_prefix = f"Message {message.message_id} from chat {message.chat.id}"
+
         # Skip if message is None
         if not message:
+            logger.debug(f"{log_prefix}: Skipped - message object is None.")
             return False
         
         # Skip if message ID already processed
         message_key = f"{message.chat.id}_{message.message_id}"
         if message_key in self.processed_messages:
+            logger.debug(f"{log_prefix}: Skipped - message ID already processed.")
             return False
         
         # Check if we should process bot messages
         if message.from_user and message.from_user.is_bot and not self.config.process_bot_messages:
+            logger.debug(f"{log_prefix}: Skipped - message from bot and process_bot_messages is False.")
             return False
         
         # Check if we should process channel messages
         if message.chat.type == "channel" and not self.config.process_channel_messages:
+            logger.debug(f"{log_prefix}: Skipped - message from channel and process_channel_messages is False.")
             return False
         
         # Check chat filtering
         if not self.config.should_process_chat(str(message.chat.id)):
+            logger.debug(f"{log_prefix}: Skipped - chat {message.chat.id} is not allowed or is ignored.")
             return False
         
         # Check channel filtering for channels
         if message.chat.type == "channel" and message.chat.username:
             if not self.config.should_process_channel(message.chat.username):
+                logger.debug(f"{log_prefix}: Skipped - channel {message.chat.username} is not allowed or is ignored.")
                 return False
         
+        logger.debug(f"{log_prefix}: Passed all processing checks.")
         return True
     
     async def _queue_message(self, message: Message) -> None:
