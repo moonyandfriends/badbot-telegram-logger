@@ -1,0 +1,10 @@
+{
+  "build": {
+    "builder": "NIXPACKS"
+  },
+  "deploy": {
+    "startCommand": "python -m badbot_telegram_logger.main",
+    "healthcheckPath": "/health",
+    "healthcheckPort": 8080
+  }
+}
