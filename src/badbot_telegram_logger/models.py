@@ -314,6 +314,7 @@ class UserInfoModel(BaseModel):
     can_join_groups: Optional[bool] = Field(None, description="Can join groups")
     can_read_all_group_messages: Optional[bool] = Field(None, description="Can read all group messages")
     supports_inline_queries: Optional[bool] = Field(None, description="Supports inline queries")
+    avatar_url: Optional[str] = Field(None, description="HTTP URL to the user's profile picture")
     
     # Metadata
     first_seen: datetime = Field(default_factory=datetime.utcnow, description="When bot first saw user")

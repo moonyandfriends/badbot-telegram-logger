@@ -344,10 +344,24 @@ class TelegramLogger:
             
             # Store user info if available
             if message.from_user:
-                await self.db_manager.store_user_info(message.from_user)
+                avatar_url = await self._get_user_profile_photo_url(message.from_user.id)
+                await self.db_manager.store_user_info(message.from_user, avatar_url)
                 
         except Exception as e:
             logger.error(f"Failed to store chat/user info: {e}")
+
+    async def _get_user_profile_photo_url(self, user_id: int) -> Optional[str]:
+        """Get the URL of a user's highest-resolution profile picture."""
+        try:
+            profile_photos = await self.application.bot.get_user_profile_photos(user_id, limit=1)
+            if profile_photos and profile_photos.photos:
+                # The photos are returned in descending order of size
+                highest_res_photo = profile_photos.photos[0][-1]
+                file = await self.application.bot.get_file(highest_res_photo.file_id)
+                return file.file_path
+        except Exception as e:
+            logger.error(f"Could not fetch profile photo for user {user_id}: {e}")
+        return None
     
     async def _start_backfill_all_chats(self) -> None:
         """Start backfill process for all chats."""

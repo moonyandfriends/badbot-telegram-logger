@@ -209,6 +209,7 @@ CREATE TABLE IF NOT EXISTS telegram_users (
     can_join_groups BOOLEAN,
     can_read_all_group_messages BOOLEAN,
     supports_inline_queries BOOLEAN,
+    avatar_url TEXT,
     
     -- Metadata
     first_seen TIMESTAMPTZ DEFAULT NOW(),

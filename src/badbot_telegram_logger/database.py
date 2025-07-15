@@ -551,7 +551,7 @@ class SupabaseManager:
             logger.error(f"Failed to store chat info for {chat.id}: {e}")
             return False
     
-    async def store_user_info(self, user: User) -> bool:
+    async def store_user_info(self, user: User, avatar_url: Optional[str] = None) -> bool:
         """
         Store or update user information.
         
@@ -573,7 +573,8 @@ class SupabaseManager:
                 added_to_attachment_menu=getattr(user, 'added_to_attachment_menu', None),
                 can_join_groups=getattr(user, 'can_join_groups', None),
                 can_read_all_group_messages=getattr(user, 'can_read_all_group_messages', None),
-                supports_inline_queries=getattr(user, 'supports_inline_queries', None)
+                supports_inline_queries=getattr(user, 'supports_inline_queries', None),
+                avatar_url=avatar_url
             )
             
             user_dict = self._user_info_model_to_dict(user_model)
